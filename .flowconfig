@@ -1,0 +1,10 @@
+[ignore]
+[include]
+[libs]
+flow-typed
+[lints]
+[options]
+module.file_ext=.js
+esproposal.class_static_fields=enable
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
+[strict]

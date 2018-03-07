@@ -1,0 +1,24 @@
+language: node_js
+sudo: false
+node_js:
+  - "8.9"
+cache: yarn
+branches:
+  only:
+    - master
+    - development
+install:
+  - yarn install
+jobs:
+  include:
+    - stage: test
+      script: yarn ci
+    - stage: release
+      if: branch = master
+      script: yarn build && yarn release
+notifications:
+  slack:
+    on_success: change
+    on_failure: always
+    rooms:
+      - webiny:rw9auyqJpDRRGcVmFCektrH5
