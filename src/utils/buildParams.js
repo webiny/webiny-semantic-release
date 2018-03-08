@@ -12,7 +12,7 @@ export default async config => {
             return () => config.tagFormat;
         }
 
-        return pkg => pkg.name + "@v${version}";
+        throw new Error("ENOTAGFORMAT: Missing `tagFormat` parameter.");
     })();
 
     const params = {
@@ -26,24 +26,6 @@ export default async config => {
             tagFormat
         }
     };
-
-    // Load preset
-    let { preset } = config;
-    if (!preset || preset === "default") {
-        preset = "./../presets/default";
-    }
-    const presetExports = await import(preset);
-
-    // Load plugins
-    let plugins = config.plugins;
-    if (!plugins && presetExports.plugins) {
-        plugins = await presetExports.plugins();
-    }
-
-    // Load packages
-    if (!config.packages && presetExports.packages) {
-        params.packages = await presetExports.packages();
-    }
 
     if (config.packages) {
         params.packages = Array.isArray(config.packages) ? config.packages : [config.packages];
@@ -66,5 +48,5 @@ export default async config => {
         }
     });
 
-    return { params, plugins };
+    return { params, plugins: config.plugins };
 };

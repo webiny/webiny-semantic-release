@@ -6,12 +6,8 @@
  * @param {Array<Function>} functions functions
  * @return {Function}
  */
-export default function(functions: Array<Function> = []): Function {
-    return function(params: mixed): Promise<mixed> {
-        if (!functions.length) {
-            return Promise.resolve();
-        }
-
+export default function (functions: Array<Function> = []): Function {
+    return function (params: mixed): Promise<mixed> {
         // Create a clone of function chain to prevent modifying the original array with `shift()`
         const chain = [...functions];
         return new Promise((parentResolve, parentReject) => {

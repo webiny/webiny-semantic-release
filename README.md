@@ -1,4 +1,9 @@
 # webiny-semantic-release
+[![Build Status](https://travis-ci.org/Webiny/webiny-semantic-release.svg?branch=master)](https://travis-ci.org/Webiny/webiny-semantic-release)
+[![Coverage Status](https://coveralls.io/repos/github/Webiny/webiny-semantic-release/badge.svg?branch=master)](https://coveralls.io/github/Webiny/webiny-semantic-release?branch=master)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://prettier.io)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/webiny/webiny-semantic-release/blob/master/LICENSE)
 
 A tool for automated and reliable versioning inspired by `semantic-release`.
 

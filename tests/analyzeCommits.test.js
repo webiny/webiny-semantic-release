@@ -152,4 +152,41 @@ describe("analyzeCommits plugin test", function() {
         expect(params.packages[0].nextRelease).to.be.undefined;
         expect(params.packages[0].lastRelease.version).to.equal("1.0.0");
     });
+
+    it("should retrieve commits that affect a particular package using custom function", async () => {
+        await gitRepo();
+
+        const messages = [
+            "feat(scope): add feature 1\naffects: package-1, ,",
+            "feat(scope): add feature 2\n\naffects: package-2, ",
+            "fix(scope): fix a bug\naffects: package-1,package-2",
+            "feat(scope): add feature 4\naffects:",
+            "chore(scope): cleanup"
+        ];
+
+        const commits = await gitCommits(messages);
+
+        const isRelevant = (pkg, commit) => {
+            if (commit.message.match(/affects:(.*)/)) {
+                return RegExp.$1.split(",").map(n => n.trim()).filter(name => pkg.name === name).length;
+            }
+        };
+        release = compose([analyzeCommitsFactory({isRelevant})]);
+
+        const params = {
+            packages: [{ name: "package-1" }, { name: "package-2" }, {name: "package-3"}],
+            logger,
+            git: new Git(),
+            config: {
+                branch: "master",
+                tagFormat: () => "v${version}"
+            }
+        };
+
+        await release(params);
+
+        expect(params.packages[0].commits).to.deep.equal([commits[2], commits[4]]);
+        expect(params.packages[1].commits).to.deep.equal([commits[2], commits[3]]);
+        expect(params.packages[2].commits).to.be.undefined;
+    });
 });

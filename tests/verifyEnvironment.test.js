@@ -84,7 +84,7 @@ describe("verifyEnvironment plugin test", function() {
         const { default: verifyEnvironmentFactory } = await import(modulePath);
         await compose([verifyEnvironmentFactory()])(params);
         expect(logger.log.args[0]).to.deep.equal([
-            "This run was triggered on %s branch, while `webiny-semantic-release` is configured to only publish from %s.",
+            "This run was triggered on %s branch, while configured to only publish from %s.",
             "master",
             "development"
         ]);
