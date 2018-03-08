@@ -11,6 +11,13 @@
     "Pavel Denisjuk <pavel@webiny.com>"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=8.9"
+  },
+  "files": [
+    "lib/",
+    "types.js"
+  ],
   "dependencies": {
     "@octokit/rest": "^14.0.9",
     "@semantic-release/commit-analyzer": "^5.0.2",

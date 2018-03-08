@@ -192,7 +192,7 @@ wsr.release({
 If you are working with multiple packages you will probably want to filter the commits so that each package is processed with only the commits that are relevant to that package.
 To configure the logic for filtering records configure the plugin like this:
 
-```
+```js
 ...
 // This will filter the commits by the presence of `affects: pkg1, pkg2, pkg3...` string in the commit message.
 // If you are using `cz-lerna-changelog` for commitizen, you will have exactly this in your commit messages.
@@ -211,7 +211,7 @@ We are using the `@semantic-release/commit-analyzer` plugin under the hood of ou
 If you need, you can pass the config to that `semantic-release` plugin by passing a `commitAnalyzer` config object.
 For all the config options visit [@semantic-release/commit-analyzer](https://github.com/semantic-release/commit-analyzer#options)
 
-```
+```js
 ...
 wsr.analyzeCommits({
     commitAnalyzer: {
