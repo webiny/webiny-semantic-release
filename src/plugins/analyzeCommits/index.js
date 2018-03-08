@@ -7,7 +7,7 @@ import getLastReleaseFactory from "./getLastRelease";
 /**
  * Plugin factory.
  * @param {Object} pluginConfig
- * @param {Object} pluginConfig.analyzeCommits (Optional) (@https://github.com/semantic-release/commit-analyzer#options)
+ * @param {Object} pluginConfig.commitAnalyzer (Optional) (https://github.com/semantic-release/commit-analyzer#options)
  * @param {Function} pluginConfig.isRelevant (Optional) A function to determine if the commit is relevant to the package.
  * @returns {function(*, *)}
  */
@@ -46,7 +46,7 @@ export default (pluginConfig = {}) => {
             }
 
             const type = await commitAnalyzer(
-                pluginConfig.analyzeCommits || {},
+                pluginConfig.commitAnalyzer || {},
                 Object.assign({ logger, commits: relevantCommits })
             );
 

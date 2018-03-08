@@ -13,21 +13,9 @@ import githubPublish from "./plugins/github/publish";
 import npmVerify from "./plugins/npm/verify";
 import npmPublish from "./plugins/npm/publish";
 import releaseNotes from "./plugins/releaseNotes";
-import updatePackageJson from "./plugins/updatePackageJson";
+import updatePackageJSON from "./plugins/updatePackageJSON";
 
-export {
-    analyzeCommits,
-    githubVerify,
-    githubPublish,
-    npmVerify,
-    npmPublish,
-    releaseNotes,
-    updatePackageJson,
-    getLernaPackages,
-    getSinglePackage
-};
-
-export default async config => {
+const release = async config => {
     const { params, plugins } = await buildParams(config);
 
     // Connect to the stdout and process each line of the output using `stdOut` function
@@ -40,4 +28,17 @@ export default async config => {
         unhook();
         throw err;
     }
+};
+
+export {
+    release,
+    analyzeCommits,
+    githubVerify,
+    githubPublish,
+    npmVerify,
+    npmPublish,
+    releaseNotes,
+    updatePackageJSON,
+    getLernaPackages,
+    getSinglePackage
 };

@@ -48,7 +48,7 @@ const config = {
     ]
 };
 
-wsr.default(config).catch(e => {
+wsr.release(config).catch(e => {
     console.error(e);
     process.exit(1);
 });
