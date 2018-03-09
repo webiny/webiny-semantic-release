@@ -71,6 +71,19 @@ describe("npmVerify plugin test", function() {
         return release(params).should.be.fulfilled;
     });
 
+    it("should throw error if token is not set", async () => {
+        const { default: npmVerifyFactory } = await import(modulePath);
+
+        const release = compose([npmVerifyFactory()]);
+
+        const params = {
+            logger,
+            config: {}
+        };
+
+        return release(params).should.be.rejectedWith(Error, /ENONPMTOKEN/);
+    });
+
     it("should throw error if invalid token is set", async () => {
         process.env["NPM_TOKEN"] = "invalid-npm-token";
 
