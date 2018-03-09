@@ -23,7 +23,13 @@ export default () => {
                     fs.writeJsonSync(path.join(pkg.location, "package.json"), pkg.packageJSON, {
                         spaces: 2
                     });
-                    const shell = await execa("npm", ["publish", `${pkg.location}`]);
+                    // We need to unset the `npm_` env variables to make sure local `.npmrc` is being read.
+                    // This is required when running scripts with yarn: https://github.com/yarnpkg/yarn/issues/4475
+                    const shell = await execa.shell(
+                        `unset $(env | awk -F= '$1 ~ /^npm_/ {print $1}') && npm publish ${
+                            pkg.location
+                        }`
+                    );
                     logger.log(shell.stdout);
                     pkg.npmPublish = {
                         ...shell
