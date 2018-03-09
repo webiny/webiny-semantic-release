@@ -168,9 +168,5 @@ describe("npmPublish plugin test", function() {
         await release(params);
 
         expect(logger.log.args[1]).to.deep.equal(["DRY: %s", "npm publish " + pkg.location]);
-        expect(logger.log.args[2]).to.deep.equal([
-            `DRY: package.json\n%s`,
-            JSON.stringify(pkg.packageJSON, null, 2)
-        ]);
     });
 });

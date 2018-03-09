@@ -1,75 +1,49 @@
 # webiny-semantic-release
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io)
+[![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/webiny/webiny-semantic-release/blob/master/LICENSE)
+
+| Branch | Build | Coverage |
+| :--- | :---: | :--- |
+| master (latest release) | [![Build Status](https://travis-ci.org/Webiny/webiny-semantic-release.svg?branch=master)](https://travis-ci.org/Webiny/webiny-semantic-release) | [![Coverage Status](https://coveralls.io/repos/github/Webiny/webiny-semantic-release/badge.svg?branch=master)](https://coveralls.io/github/Webiny/webiny-semantic-release?branch=master) |
+| development (active development) | [![Build Status](https://travis-ci.org/Webiny/webiny-semantic-release.svg?branch=development)](https://travis-ci.org/Webiny/webiny-semantic-release) | [![Coverage Status](https://coveralls.io/repos/github/Webiny/webiny-semantic-release/badge.svg?branch=development)](https://coveralls.io/github/Webiny/webiny-semantic-release?branch=development) |
 
 A tool for automated and reliable versioning inspired by `semantic-release`.
 
 - supports single package repositories
 - supports monorepo structure (Lerna or custom)
 - supports plugins and 100% customizable release/publish process
-- supports presets so you can easily share your preset via `npm`
-- detailed preview of actual release (dry run) if you want to review what is about to happen
+- detailed preview of actual release (dry run) if you want to preview what is about to happen
 
 ## Why not simply use `semantic-release`?
 Kudos to the `semantic-release` team for starting this movement!
-We greatly support it and think it is a very important part for a stable open-source ecosystem.
+We greatly support it and think it is a very important step towards a stable open-source ecosystem.
 
-But, the primary problem for us was - it does not support monorepos.
+But the primary problem for us was - it does not support monorepos.
 We did try to wrap it with some custom logic to make it work in a monorepo environment but we very soon hit a wall.
 We gave up when we had to update versions of inter-dependent packages (when one of the packages in your monorepo depends on another package in te same monorepo).
 There were also other problems, but these were the deciding ones.
 
-Still, you can use the existing `semantic-release` plugins!
-We use 2 of their plugins to analyze commits and generate release notes by simply wrapping it with our own plugin (read further) and adding some bells and whistles.
+Still, we use 2 of their plugins to analyze commits and generate release notes by simply wrapping them with our own plugins (read further) and adding some bells and whistles.
 
 ## How to use
-1. Using CLI.
-2. Using custom script via Node.
-
-By default we only allow release from `master` branch.
-Also we use a `default` preset which defines a common set of plugins:
-
-
+We provide a set of plugins you can use to get started quickly.
+Plugins are listed in the recommended order:
 
 | Order | Plugin | Description |
 | :---: | :---: | :--- |
 | 1. | githubVerify | verifies `GH_TOKEN` or `GITHUB_TOKEN` and repo permissions. |
 | 2. | npmVerify | verifies `NPM_TOKEN`. |
 | 3. | analyzeCommits | analyzes commit history and determines version type. |
-| 4. | updatePackageJson | updates package version and versions of dependencies. |
+| 4. | updatePackageJSON | updates package version and versions of dependencies. |
 | 5. | releaseNotes | generates release notes for GitHub release. |
 | 6. | githubPublish | publishes a new release to GitHub. |
 | 7. | npmPublish | publishes the package to npm. |
 
-If you need a custom set of plugins, either create your own preset as a separate
-npm package or define the `plugins` array.
-
-
-### CLI
-```bash
-yarn add webiny-semantic-release
-
-webiny-semantic-release [options]
-
-Options:
-  --branch   Allow release only from this branch.            [default: "master"]
-  --ci       Execute release ONLY in a CI environment.           [default: true]
-  --project  Project type (for custom structures use Node API to configure the
-             release).                              [choices: "single", "lerna"]
-  --preview  Run release preview without actually performing a release.
-                                                                [default: false]
-  --preset   Use given preset as a source of plugins. A preset is a module that
-             exports `plugins` array (named export).        [default: "default"]
-  --require  Require the given module (ex: "babel-register").
-  --version  Show version number                                       [boolean]
-  --help     Show help                                                 [boolean]
-```
-
-## Node API
-To run the release process from JS, import the main function and pass the desired config.
 
 ```js
-import release, { getSinglePackage, getLernaPackages } from "webiny-semantic-release";
-// or whatever form of require you prefer
-const {default: release, getSinglePackage, getLernaPackages } = require("webiny-semantic-release");
+// We are using `require` to avoid having to transpile the code
+const wsr = require("webiny-semantic-release");
 
 // NOTE: you are responsible for defining an array of packages!
 // This makes this tool very flexible as it does not care about your project structure,
@@ -77,42 +51,51 @@ const {default: release, getSinglePackage, getLernaPackages } = require("webiny-
 
 // For single package repos
 // NOTE: config is optional. `process.cwd()` is used as package root by default.
-const projectPackages = getSinglePackage({root: process.cwd()});
+const projectPackages = wsr.getSinglePackage({root: process.cwd()});
 
 // For Lerna projects
-const projectPackages = getLernaPackages();
+const projectPackages = wsr.getLernaPackages();
 
 // For custom project structures you just need to specify your packages using the following template:
 const projectPackages = [
-{
-    name: 'package-1',
-    location: '/my/project/packages/package-1',
-    packageJSON: {
-        // Here goes the ENTIRE content of `package.json` file
+    {
         name: 'package-1',
-        version: '0.0.0-semantically-released',
-        dependencies: {},
-        // ...
+        location: '/my/project/packages/package-1',
+        packageJSON: {
+            // Here goes the ENTIRE content of `package.json` file
+            name: 'package-1',
+            version: '0.0.0-semantically-released',
+            dependencies: {},
+            // ...
+        }
     }
-}
 ];
 
 // Run release (returns a Promise)
-release({
+wsr.release({
     ci: true,
     preview: false,
     branch: 'master',
     packages: projectPackages,
-    preset: 'default'
-}).catch(e => {
-    console.log(e);
+    plugins: [
+        wsr.githubVerify(),
+        wsr.npmVerify(),
+        wsr.analyzeCommits(),
+        wsr.releaseNotes(),
+        wsr.updatePackageJSON(),
+        wsr.githubPublish(),
+        wsr.npmPublish()
+    ]
+}).catch(err => {
+    console.log(err);
     process.exit(1);
 });
 ```
 
 ### Plugin system
 Our plugin system is very straightforward. It works almost the same way `express` middleware does.
-Under the hood we use the `webiny-compose` package, which is a very simple tool to compose middleware functions using arbitrary `params`, a `next` callback and a `finish` callback. `params` are passed to each consecutive plugin and are mutable so all plugins share data and can modify data.
+Under the hood we use a very simple tool to compose middleware functions using arbitrary `params`, a `next` callback and a `finish` callback.
+`params` are passed to each consecutive plugin and are mutable so all plugins share data and can modify data.
 
 These Flow types will make everything much clearer:
 
@@ -126,6 +109,7 @@ declare type Package = {
 declare type Params = {
     packages: Array<Package>,
     logger: { log: Function, error: Function },
+    git: Object,
     config: {
         ci: Boolean,
         preview: Boolean,
@@ -170,62 +154,77 @@ export default () => {
 };
 ```
 
-### Using built-in plugins + some of your own
+### Adding custom plugins to the release process
 
-We provide a set of plugins to handle publishing to `npm` and `GitHub`.
-
-By default, you don't need to do anything to use them. Just use the `default` preset.
-
-However, if you want to create your own publishing process and maybe remove or add some of the plugins, you can do it like this:
-
+If you want to create your own publishing process and maybe remove or add some of the plugins, you can do it like this:
 
 ```js
 // We will remove the `npm` plugins, and instead add 2 new plugins
 
-import release, {
-    getSinglePackage,
-    analyzeCommits,
-    releaseNotes,
-    githubVerify,
-    githubPublish,
-} from "webiny-semantic-release";
+const wsr = require("webiny-semantic-release");
 
-release({
+wsr.release({
     preview: true,
-    packages: getSinglePackage(),
+    packages: wsr.getSinglePackage(),
     plugins: [
-        githubVerify(),
+        wsr.githubVerify(),
         checkReadmeFile(), // Use your new plugin for README.md verification (see "Creating a plugin")
-        analyzeCommits(),
-        releaseNotes(),
+        wsr.analyzeCommits(),
+        wsr.releaseNotes(),
         // This plugin will modify the release notes of each package and add a custom footer.
         // After the `releaseNotes` plugin did its job, each package `nextRelease` will contain a `notes` key with the generated notes.
         ({packages}, next) => {
             packages.map(pkg => {
-                pkg.nextRelease.notes += "\nI MUST have this at the bottom of each release!"
+                pkg.nextRelease && pkg.nextRelease.notes += "\nI MUST have this at the bottom of each release!"
             });
             next();
         },
         // Publish plugin will now use the new `notes` because they were modified by your plugin
-        githubPublish()
+        wsr.githubPublish()
     ]
+}).catch(err => {
+    console.error(err);
+    process.exit(1);
 });
 ```
 
-### Creating a preset
-A preset is a simple module that exports a `plugins` function and optionally a `packages` function.
-Both functions can be synchronous and asynchronous.
+### Filtering relevant commits
+If you are working with multiple packages you will probably want to filter the commits so that each package is processed with only the commits that are relevant to that package.
+To configure the logic for filtering records configure the plugin like this:
 
 ```js
-export const plugins = () => {
-    return [
-        // Whatever plugins you need
-    ];
-};
+...
+// This will filter the commits by the presence of `affects: pkg1, pkg2, pkg3...` string in the commit message.
+// If you are using `cz-lerna-changelog` for commitizen, you will have exactly this in your commit messages.
+wsr.analyzeCommits({
+    isRelevant: (pkg, commit) => {
+        if (commit.message.match(/affects:(.*)/)) {
+            return RegExp.$1.split(",").map(n => n.trim()).filter(name => pkg.name === name).length;
+        }
+    }
+})
+...
+```
 
-export const packages = () => {
-    return [
-        // Packages
-    ];
-};
+### Configuring the `analyzeCommits` plugin
+We are using the `@semantic-release/commit-analyzer` plugin under the hood of our `analyzeCommits` plugin.
+If you need, you can pass the config to that `semantic-release` plugin by passing a `commitAnalyzer` config object.
+For all the config options visit [@semantic-release/commit-analyzer](https://github.com/semantic-release/commit-analyzer#options)
+
+```js
+...
+wsr.analyzeCommits({
+    commitAnalyzer: {
+        "preset": "angular",
+        "releaseRules": [
+            {"type": "docs", "scope":"README", "release": "patch"},
+            {"type": "refactor", "release": "patch"},
+            {"type": "style", "release": "patch"}
+        ],
+        "parserOpts": {
+            "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+        }
+    }
+})
+...
 ```
