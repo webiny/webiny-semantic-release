@@ -13,7 +13,6 @@ if (argv.require) {
 const wsr = require("./../");
 
 const config = {
-    packages: [wsr.getSinglePackage()],
     preview: argv.preview || false,
     branch: argv.branch || "master",
     tagFormat: pkg => pkg.name + "@v${version}",
