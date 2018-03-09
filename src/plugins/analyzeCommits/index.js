@@ -60,9 +60,11 @@ export default (pluginConfig = {}) => {
             }
 
             relevantCommits.length &&
-            logger.log(
-                `Relevant commits:\n${"* ".padStart(9)}${relevantCommits.map(c => c.subject.padStart(9)).join("\n* ")}`
-            );
+                logger.log(
+                    `Relevant commits:\n${"*".padStart(8)} ${relevantCommits
+                        .map(c => c.subject)
+                        .join(`\n${"*".padStart(8)} `)}`
+                );
             let version;
             if (lastRelease.version) {
                 version = semver.inc(lastRelease.version, type);

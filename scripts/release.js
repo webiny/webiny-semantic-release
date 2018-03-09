@@ -15,8 +15,8 @@ const wsr = require("./../");
 const config = {
     packages: [wsr.getSinglePackage()],
     preview: argv.preview || false,
-    branch: "master",
-    tagFormat: "v${version}",
+    branch: argv.branch || "master",
+    tagFormat: pkg => pkg.name + "@v${version}",
     plugins: [
         wsr.githubVerify(),
         wsr.npmVerify(),
@@ -33,7 +33,7 @@ const config = {
             });
             next();
         },
-        wsr.updatePackageJson(),
+        wsr.updatePackageJSON(),
         ({ packages }, next) => {
             packages.map(pkg => {
                 if (pkg.nextRelease.version === "1.0.0") {
