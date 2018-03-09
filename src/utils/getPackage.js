@@ -1,7 +1,7 @@
 import readPkg from "read-pkg";
 
 /**
- * Get single package
+ * Get a single package
  * @param config
  * @returns {{name: string, location: string, packageJSON}}
  */

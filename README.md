@@ -49,12 +49,9 @@ const wsr = require("webiny-semantic-release");
 // This makes this tool very flexible as it does not care about your project structure,
 // only about the packages you pass to it.
 
-// For single package repos
-// NOTE: config is optional. `process.cwd()` is used as package root by default.
-const projectPackages = wsr.getSinglePackage({root: process.cwd()});
+// For single package repos the package will be loaded automatically
 
-// For Lerna projects
-const projectPackages = wsr.getLernaPackages();
+// For Lerna packages read the section below
 
 // For custom project structures you just need to specify your packages using the following template:
 const projectPackages = [
@@ -90,6 +87,25 @@ wsr.release({
     console.log(err);
     process.exit(1);
 });
+```
+
+### Lerna packages
+We did not include `lerna` as a dependency to keep things simple.
+Loading packages yourself is simple enough, here is a working example:
+
+```js
+import Repository from "lerna/lib/Repository";
+import PackageUtilities from "lerna/lib/PackageUtilities";
+
+const packages = PackageUtilities.getPackages(new Repository())
+    .filter(pkg => !pkg.isPrivate()) // do not include private packages
+    .map(pkg => {
+        return {
+            name: pkg.name,
+            location: pkg.location,
+            packageJSON: pkg.toJSON()
+        };
+    });
 ```
 
 ### Plugin system
@@ -165,7 +181,6 @@ const wsr = require("webiny-semantic-release");
 
 wsr.release({
     preview: true,
-    packages: wsr.getSinglePackage(),
     plugins: [
         wsr.githubVerify(),
         checkReadmeFile(), // Use your new plugin for README.md verification (see "Creating a plugin")

@@ -1,7 +1,6 @@
 import hookStd from "hook-std";
 
-import getLernaPackages from "./utils/getLernaPackages";
-import getSinglePackage from "./utils/getSinglePackage";
+import getPackage from "./utils/getPackage";
 import buildParams from "./utils/buildParams";
 import stdOut from "./utils/stdOut";
 import compose from "./utils/compose";
@@ -39,6 +38,5 @@ export {
     npmPublish,
     releaseNotes,
     updatePackageJSON,
-    getLernaPackages,
-    getSinglePackage
+    getPackage
 };

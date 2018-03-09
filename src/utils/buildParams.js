@@ -1,5 +1,6 @@
 import Git from "./git";
 import logger from "./logger";
+import getPackage from "./getPackage";
 
 export default async config => {
     const git = config.git || new Git();
@@ -27,11 +28,13 @@ export default async config => {
         }
     };
 
-    if (config.packages) {
+    if (!config.packages) {
+        params.packages = [getPackage()];
+    } else {
         params.packages = Array.isArray(config.packages) ? config.packages : [config.packages];
     }
 
-    if (!Array.isArray(params.packages) || !params.packages.length) {
+    if (!params.packages.length) {
         throw new Error(`ENOPACKAGES: missing packages to process.`);
     }
 

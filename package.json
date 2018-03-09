@@ -1,6 +1,6 @@
 {
   "name": "webiny-semantic-release",
-  "description": "Webiny wrapper for semantic-release to be used in lerna environment.",
+  "description": "A highly customizable tool for publishing semantically correct versions of your packages to npm and github.",
   "version": "0.0.0-semantically-released",
   "main": "src/index.js",
   "repository": {
