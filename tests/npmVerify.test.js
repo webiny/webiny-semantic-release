@@ -51,12 +51,14 @@ describe("npmVerify plugin test", function() {
         process.env["NPM_TOKEN"] = "npm-token";
 
         proxyquire(modulePath, {
-            execa: async () => {
-                const npmrc = await fs.readFile("./.npmrc");
-                if (npmrc.includes("//registry.npmjs.org/:_authToken=npm-token")) {
-                    return true;
+            execa: {
+                shellSync: async () => {
+                    const npmrc = await fs.readFile("./.npmrc");
+                    if (npmrc.includes("//registry.npmjs.org/:_authToken=npm-token")) {
+                        return true;
+                    }
+                    throw new Error("Command failed: npm whoami");
                 }
-                throw new Error("Command failed: npm whoami");
             }
         });
 
