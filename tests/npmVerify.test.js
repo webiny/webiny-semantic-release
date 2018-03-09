@@ -52,7 +52,7 @@ describe("npmVerify plugin test", function() {
 
         proxyquire(modulePath, {
             execa: {
-                shellSync: async () => {
+                shell: async () => {
                     const npmrc = await fs.readFile("./.npmrc");
                     if (npmrc.includes("//registry.npmjs.org/:_authToken=npm-token")) {
                         return true;
