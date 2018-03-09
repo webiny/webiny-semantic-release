@@ -3,12 +3,12 @@ import { template } from "lodash";
 import commitAnalyzer from "@semantic-release/commit-analyzer";
 import getCommits from "./getCommits";
 import getLastReleaseFactory from "./getLastRelease";
-import getRelevantCommits from "./relevantCommits";
 
 /**
  * Plugin factory.
  * @param {Object} pluginConfig
- * @param {Object} pluginConfig.analyzeCommits (@https://github.com/semantic-release/commit-analyzer#options)
+ * @param {Object} pluginConfig.commitAnalyzer (Optional) (https://github.com/semantic-release/commit-analyzer#options)
+ * @param {Function} pluginConfig.isRelevant (Optional) A function to determine if the commit is relevant to the package.
  * @returns {function(*, *)}
  */
 export default (pluginConfig = {}) => {
@@ -31,10 +31,10 @@ export default (pluginConfig = {}) => {
             logger.log(`======== Processing %s ========`, pkg.name);
             const lastRelease = await getLastRelease(tagFormat);
             const commits = await getCommits(lastRelease.gitHead, config.branch, logger);
-            const relevantCommits = getRelevantCommits(commits, pkg);
-
-            // Store relevant commits for later use
-            packages[i].commits = relevantCommits;
+            let relevantCommits = commits;
+            if (typeof pluginConfig.isRelevant === "function") {
+                relevantCommits = commits.filter(commit => pluginConfig.isRelevant(pkg, commit));
+            }
 
             // Store lastRelease for later use
             packages[i]["lastRelease"] = lastRelease;
@@ -46,12 +46,24 @@ export default (pluginConfig = {}) => {
             }
 
             const type = await commitAnalyzer(
-                pluginConfig.analyzeCommits || {},
+                pluginConfig.commitAnalyzer || {},
                 Object.assign({ logger, commits: relevantCommits })
             );
+
+            // Store relevant commits for later use
+            packages[i].commits = relevantCommits;
+
+            if (!type) {
+                logger.log(`No relevant commits indicate a release!`);
+                logger.log(`======== Finished processing package ========\n\n`);
+                continue;
+            }
+
             relevantCommits.length &&
                 logger.log(
-                    `Relevant commits:\n* ${relevantCommits.map(c => c.subject).join("\n* ")}`
+                    `Relevant commits:\n${"*".padStart(8)} ${relevantCommits
+                        .map(c => c.subject)
+                        .join(`\n${"*".padStart(8)} `)}`
                 );
             let version;
             if (lastRelease.version) {
