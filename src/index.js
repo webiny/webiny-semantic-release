@@ -12,7 +12,7 @@ import githubPublish from "./plugins/github/publish";
 import npmVerify from "./plugins/npm/verify";
 import npmPublish from "./plugins/npm/publish";
 import releaseNotes from "./plugins/releaseNotes";
-import updatePackageJSON from "./plugins/updatePackageJSON";
+import updatePackage from "./plugins/updatePackage";
 
 const release = async config => {
     const { params, plugins } = await buildParams(config);
@@ -37,6 +37,6 @@ export {
     npmVerify,
     npmPublish,
     releaseNotes,
-    updatePackageJSON,
+    updatePackage,
     getPackage
 };

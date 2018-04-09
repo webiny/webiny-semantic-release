@@ -35,7 +35,7 @@ Plugins are listed in the recommended order:
 | 1. | githubVerify | verifies `GH_TOKEN` or `GITHUB_TOKEN` and repo permissions. |
 | 2. | npmVerify | verifies `NPM_TOKEN`. |
 | 3. | analyzeCommits | analyzes commit history and determines version type. |
-| 4. | updatePackageJSON | updates package version and versions of dependencies. |
+| 4. | updatePackage | updates package version and versions of dependencies. |
 | 5. | releaseNotes | generates release notes for GitHub release. |
 | 6. | githubPublish | publishes a new release to GitHub. |
 | 7. | npmPublish | publishes the package to npm. |
@@ -79,7 +79,7 @@ wsr.release({
         wsr.npmVerify(),
         wsr.analyzeCommits(),
         wsr.releaseNotes(),
-        wsr.updatePackageJSON(),
+        wsr.updatePackage(),
         wsr.githubPublish(),
         wsr.npmPublish()
     ]

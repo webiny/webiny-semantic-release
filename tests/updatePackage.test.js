@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import compose from "../src/utils/compose";
-import updatePackageJSONFactory from "../src/plugins/updatePackageJSON/index";
+import updatePackageFactory from "../src/plugins/updatePackage";
 
-describe("updatePackageJSON plugin test", function() {
+describe("updatePackage plugin test", function() {
     it("should update package version and versions of dependencies", async () => {
         const params = {
             packages: [
@@ -50,7 +50,7 @@ describe("updatePackageJSON plugin test", function() {
             ]
         };
 
-        await compose([updatePackageJSONFactory()])(params);
+        await compose([updatePackageFactory()])(params);
 
         const [pkg1, pkg2, pkg3] = params.packages.map(p => p.packageJSON);
 

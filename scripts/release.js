@@ -32,7 +32,7 @@ const config = {
             });
             next();
         },
-        wsr.updatePackageJSON(),
+        wsr.updatePackage(),
         ({ packages }, next) => {
             packages.map(pkg => {
                 if (pkg.nextRelease.version === "1.0.0") {
