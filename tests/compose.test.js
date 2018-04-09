@@ -1,10 +1,9 @@
-// @flow
 import { assert } from "chai";
 import compose from "./../src/utils/compose";
 
 describe("middleware composition test", () => {
     it("should return a new function", () => {
-        const middleware = compose([]);
+        const middleware = compose();
         assert.isFunction(middleware);
     });
 

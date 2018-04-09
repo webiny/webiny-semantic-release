@@ -55,9 +55,11 @@ describe("npmPublish plugin test", function() {
 
         let packageWritten = false;
         proxyquire("../src/plugins/npm/publish", {
-            execa: () => {
-                packageWritten = fileExists(dir + "/package.json");
-                return { stdout: pkg.packageJSON.name + "@" + pkg.packageJSON.version };
+            execa: {
+                shell: () => {
+                    packageWritten = fileExists(dir + "/package.json");
+                    return { stdout: pkg.packageJSON.name + "@" + pkg.packageJSON.version };
+                }
             }
         });
 
@@ -105,11 +107,13 @@ describe("npmPublish plugin test", function() {
         };
 
         proxyquire("../src/plugins/npm/publish", {
-            execa: stub()
-                .onFirstCall()
-                .throws(() => new Error("Invalid package"))
-                .onSecondCall()
-                .returns({ stdout: pkg2.packageJSON.name + "@" + pkg2.packageJSON.version })
+            execa: {
+                shell: stub()
+                    .onFirstCall()
+                    .throws(() => new Error("Invalid package"))
+                    .onSecondCall()
+                    .returns({ stdout: pkg2.packageJSON.name + "@" + pkg2.packageJSON.version })
+            }
         });
 
         const { default: npmPublishFactory } = await import("../src/plugins/npm/publish");
@@ -168,9 +172,5 @@ describe("npmPublish plugin test", function() {
         await release(params);
 
         expect(logger.log.args[1]).to.deep.equal(["DRY: %s", "npm publish " + pkg.location]);
-        expect(logger.log.args[2]).to.deep.equal([
-            `DRY: package.json\n%s`,
-            JSON.stringify(pkg.packageJSON, null, 2)
-        ]);
     });
 });

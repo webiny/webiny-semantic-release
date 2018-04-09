@@ -1,5 +1,6 @@
 import Git from "./git";
 import logger from "./logger";
+import getPackage from "./getPackage";
 
 export default async config => {
     const git = config.git || new Git();
@@ -12,7 +13,7 @@ export default async config => {
             return () => config.tagFormat;
         }
 
-        return pkg => pkg.name + "@v${version}";
+        throw new Error("ENOTAGFORMAT: Missing `tagFormat` parameter.");
     })();
 
     const params = {
@@ -27,29 +28,13 @@ export default async config => {
         }
     };
 
-    // Load preset
-    let { preset } = config;
-    if (!preset || preset === "default") {
-        preset = "./../presets/default";
-    }
-    const presetExports = await import(preset);
-
-    // Load plugins
-    let plugins = config.plugins;
-    if (!plugins && presetExports.plugins) {
-        plugins = await presetExports.plugins();
-    }
-
-    // Load packages
-    if (!config.packages && presetExports.packages) {
-        params.packages = await presetExports.packages();
-    }
-
-    if (config.packages) {
+    if (!config.packages) {
+        params.packages = [getPackage()];
+    } else {
         params.packages = Array.isArray(config.packages) ? config.packages : [config.packages];
     }
 
-    if (!Array.isArray(params.packages) || !params.packages.length) {
+    if (!params.packages.length) {
         throw new Error(`ENOPACKAGES: missing packages to process.`);
     }
 
@@ -66,5 +51,5 @@ export default async config => {
         }
     });
 
-    return { params, plugins };
+    return { params, plugins: config.plugins };
 };

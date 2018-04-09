@@ -5,9 +5,12 @@ import Git from "./../src/utils/git";
 const { assert } = chai;
 
 describe("build params test", () => {
+    const tagFormat = pkg => pkg.name + "@v${version}";
+
     it("should build a valid default `params` object", async () => {
         const config = {
-            packages: [{ name: "package-1", location: "", packageJSON: {} }]
+            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            tagFormat
         };
 
         const { params } = await buildParams(config);
@@ -25,8 +28,11 @@ describe("build params test", () => {
         assert.equal(params.config.tagFormat({ name: "test" }), "test@v${version}");
     });
 
-    it("should throw an error `ENOPACKAGES` if no packages are defined", async () => {
-        return buildParams({}).should.be.rejectedWith(Error, /ENOPACKAGES/);
+    it("should load a package from cwd() if no packages are defined", async () => {
+        return buildParams({ tagFormat }).should.be.fulfilled.then(({ params }) => {
+            assert.lengthOf(params.packages, 1);
+            assert.equal(params.packages[0].name, "webiny-semantic-release");
+        });
     });
 
     it("should build a valid `params` object from given config 1", async () => {
@@ -36,7 +42,8 @@ describe("build params test", () => {
             preview: true,
             repositoryUrl: "test",
             branch: "development",
-            packages: [{ name: "package-1", location: "", packageJSON: {} }]
+            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            tagFormat
         };
 
         const { params } = await buildParams(config);
@@ -63,7 +70,8 @@ describe("build params test", () => {
             preview: true,
             repositoryUrl: "test",
             branch: "development",
-            packages: [{ name: "package-1", location: "", packageJSON: {} }]
+            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            tagFormat
         };
 
         const { params } = await buildParams(config);
@@ -98,7 +106,7 @@ describe("build params test", () => {
     it("should use the given `tagFormat` function", async () => {
         const config = {
             packages: [{ name: "package-1", location: "", packageJSON: {} }],
-            tagFormat: pkg => pkg.name + "@v${version}"
+            tagFormat
         };
 
         const { params } = await buildParams(config);
@@ -108,38 +116,34 @@ describe("build params test", () => {
 
     it("should convert a single package to an array of packages", async () => {
         const pkg1 = { name: "package-1", location: "", packageJSON: {} };
-        const { params } = await buildParams({ packages: pkg1 });
+        const { params } = await buildParams({
+            packages: pkg1,
+            tagFormat
+        });
 
         assert.deepEqual(params.packages, [pkg1]);
     });
 
-    it("should load packages from custom preset", async () => {
-        const { params } = await buildParams({ preset: __dirname + "/utils/preset" });
-
-        assert.deepEqual(params.packages, [
-            { name: "preset-package", location: "", packageJSON: {} }
-        ]);
-    });
-
-    it("should not load plugins from preset if specified in the config", async () => {
-        const { plugins } = await buildParams({
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
-            plugins: [value => value]
-        });
-
-        assert.lengthOf(plugins, 1);
-        assert.equal(plugins[0]("dummy"), "dummy");
+    it("should throw error if an empty array of packages is passed", () => {
+        return buildParams({ tagFormat: "v${version}", packages: [] }).should.be.rejectedWith(
+            Error,
+            /ENOPACKAGES/
+        );
     });
 
     it("should throw error if an invalid package structure is found", async () => {
-        const config1 = { packages: [{ name: "package-1" }] };
-        const config2 = { packages: [{ packageJSON: "package-1" }] };
-        const config3 = { packages: [{ location: "package-1" }] };
+        const config1 = { packages: [{ name: "package-1" }], tagFormat };
+        const config2 = { packages: [{ packageJSON: "package-1" }], tagFormat };
+        const config3 = { packages: [{ location: "package-1" }], tagFormat };
 
         return Promise.all([
             buildParams(config1).should.be.rejectedWith(Error, /EINVALIDPACKAGE/),
             buildParams(config2).should.be.rejectedWith(Error, /EINVALIDPACKAGE/),
             buildParams(config3).should.be.rejectedWith(Error, /EINVALIDPACKAGE/)
         ]);
+    });
+
+    it("should throw error if `tagFormat` is not defined", async () => {
+        return buildParams({}).should.be.rejectedWith(Error, /ENOTAGFORMAT/);
     });
 });

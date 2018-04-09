@@ -21,7 +21,7 @@ export default () => {
 
         if (branch !== config.branch) {
             logger.log(
-                "This run was triggered on %s branch, while `webiny-semantic-release` is configured to only publish from %s.",
+                "This run was triggered on %s branch, while configured to only publish from %s.",
                 branch,
                 config.branch
             );
