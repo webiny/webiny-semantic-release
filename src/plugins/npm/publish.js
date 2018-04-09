@@ -13,10 +13,8 @@ export default (config = {}) => {
             }
 
             logger.log(
-                "Publishing %s version %s to npm registry %s",
-                pkg.name,
-                pkg.nextRelease.version,
-                registry
+                "Publishing %s version %s to npm registry" + (registry ? " %s" : ""),
+                ...[pkg.name, pkg.nextRelease.version, registry].filter(v => v)
             );
 
             const command = [
