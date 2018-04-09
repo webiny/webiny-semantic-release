@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import compose from "../src/utils/compose";
-import updatePackageJSONFactory from "../src/plugins/updatePackageJSON";
+import updatePackageJSONFactory from "../src/plugins/updatePackageJSON/index";
 
 describe("updatePackageJSON plugin test", function() {
     it("should update package version and versions of dependencies", async () => {
