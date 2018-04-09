@@ -8,7 +8,7 @@ describe("updatePackage plugin test", function() {
             packages: [
                 {
                     name: "package-1",
-                    packageJSON: {
+                    package: {
                         name: "package-1",
                         version: "0.0.0-semantically-released",
                         dependencies: {
@@ -23,7 +23,7 @@ describe("updatePackage plugin test", function() {
                 },
                 {
                     name: "package-2",
-                    packageJSON: {
+                    package: {
                         name: "package-2",
                         version: "0.0.0-semantically-released"
                     },
@@ -36,7 +36,7 @@ describe("updatePackage plugin test", function() {
                 },
                 {
                     name: "package-3",
-                    packageJSON: {
+                    package: {
                         name: "package-3",
                         version: "0.0.0-semantically-released",
                         dependencies: {
@@ -52,7 +52,7 @@ describe("updatePackage plugin test", function() {
 
         await compose([updatePackageFactory()])(params);
 
-        const [pkg1, pkg2, pkg3] = params.packages.map(p => p.packageJSON);
+        const [pkg1, pkg2, pkg3] = params.packages.map(p => p.package);
 
         expect(pkg1.version).to.equal("1.0.0");
         expect(pkg1.dependencies["package-2"]).to.equal("^1.6.0");

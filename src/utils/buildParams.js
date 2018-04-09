@@ -42,11 +42,11 @@ export default async config => {
     params.packages.map(pkg => {
         if (
             !pkg.hasOwnProperty("name") ||
-            !pkg.hasOwnProperty("packageJSON") ||
+            !pkg.hasOwnProperty("package") ||
             !pkg.hasOwnProperty("location")
         ) {
             throw new Error(
-                `EINVALIDPACKAGE: Packages MUST contain \`name\`, \`location\` and \`packageJSON\` keys.`
+                `EINVALIDPACKAGE: Packages MUST contain \`name\`, \`location\` and \`package\` keys.`
             );
         }
     });

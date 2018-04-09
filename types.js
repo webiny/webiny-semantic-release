@@ -1,7 +1,7 @@
 export type Package = {
     name: string,
     location: string,
-    packageJSON: Object
+    package: Object
 };
 
 export type Params = {

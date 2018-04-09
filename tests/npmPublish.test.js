@@ -38,7 +38,7 @@ describe("npmPublish plugin test", function() {
         const pkg = {
             name: "package-1",
             location: dir,
-            packageJSON: {
+            package: {
                 name: "package-1",
                 version: "1.0.0"
             },
@@ -58,7 +58,7 @@ describe("npmPublish plugin test", function() {
             execa: {
                 shell: () => {
                     packageWritten = fileExists(dir + "/package.json");
-                    return { stdout: pkg.packageJSON.name + "@" + pkg.packageJSON.version };
+                    return { stdout: pkg.package.name + "@" + pkg.package.version };
                 }
             }
         });
@@ -68,8 +68,8 @@ describe("npmPublish plugin test", function() {
         await release(params);
 
         expect(packageWritten).to.be.true;
-        expect(pkg.npmPublish.stdout).to.contain(pkg.packageJSON.name);
-        expect(pkg.npmPublish.stdout).to.contain(pkg.packageJSON.version);
+        expect(pkg.npmPublish.stdout).to.contain(pkg.package.name);
+        expect(pkg.npmPublish.stdout).to.contain(pkg.package.version);
     });
 
     it("should continue publishing packages even if one of the packages fails", async () => {
@@ -79,7 +79,7 @@ describe("npmPublish plugin test", function() {
         const pkg1 = {
             name: "package-1",
             location: dir1,
-            packageJSON: {
+            package: {
                 name: "package-1",
                 version: "1.0.0"
             },
@@ -91,7 +91,7 @@ describe("npmPublish plugin test", function() {
         const pkg2 = {
             name: "package-2",
             location: dir2,
-            packageJSON: {
+            package: {
                 name: "package-2",
                 version: "1.2.0"
             },
@@ -112,7 +112,7 @@ describe("npmPublish plugin test", function() {
                     .onFirstCall()
                     .throws(() => new Error("Invalid package"))
                     .onSecondCall()
-                    .returns({ stdout: pkg2.packageJSON.name + "@" + pkg2.packageJSON.version })
+                    .returns({ stdout: pkg2.package.name + "@" + pkg2.package.version })
             }
         });
 
@@ -121,7 +121,7 @@ describe("npmPublish plugin test", function() {
         await release(params);
 
         expect(pkg1.npmPublish.error.message).to.equal("Invalid package");
-        expect(pkg2.npmPublish.stdout).to.contain(pkg2.packageJSON.version);
+        expect(pkg2.npmPublish.stdout).to.contain(pkg2.package.version);
     });
 
     it("should skip publishing if `nextRelease` is not set", async () => {
@@ -146,7 +146,7 @@ describe("npmPublish plugin test", function() {
         const pkg = {
             name: "package-1",
             location: "/dummy/location",
-            packageJSON: {
+            package: {
                 name: "package-1",
                 version: "1.0.0"
             },

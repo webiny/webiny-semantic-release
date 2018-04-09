@@ -58,7 +58,7 @@ const projectPackages = [
     {
         name: 'package-1',
         location: '/my/project/packages/package-1',
-        packageJSON: {
+        package: {
             // Here goes the ENTIRE content of `package.json` file
             name: 'package-1',
             version: '0.0.0-semantically-released',
@@ -103,7 +103,7 @@ const packages = PackageUtilities.getPackages(new Repository())
         return {
             name: pkg.name,
             location: pkg.location,
-            packageJSON: pkg.toJSON()
+            package: pkg.toJSON()
         };
     });
 ```
@@ -119,7 +119,7 @@ These Flow types will make everything much clearer:
 declare type Package = {
     name: string,
     location: string,
-    packageJSON: Object
+    package: Object
 };
 
 declare type Params = {

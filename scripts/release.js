@@ -24,7 +24,7 @@ const config = {
         // Make sure "main" field does not start with `src/`
         ({ packages, logger }, next) => {
             packages.map(pkg => {
-                const json = pkg.packageJSON;
+                const json = pkg.package;
                 if (json.main && (json.main.startsWith("src/") || json.main.startsWith("./src/"))) {
                     logger.log(`Updating \`main\` field of %s`, pkg.name);
                     json.main = json.main.replace("src/", "lib/");

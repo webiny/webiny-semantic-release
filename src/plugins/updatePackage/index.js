@@ -28,9 +28,9 @@ export default () => {
             }
 
             // Update package.json data
-            pkg.packageJSON.version = pkg.nextRelease.version;
-            updateDeps(pkg.packageJSON.dependencies, packages);
-            updateDeps(pkg.packageJSON.devDependencies, packages);
+            pkg.package.version = pkg.nextRelease.version;
+            updateDeps(pkg.package.dependencies, packages);
+            updateDeps(pkg.package.devDependencies, packages);
         }
 
         next();

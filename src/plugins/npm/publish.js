@@ -33,7 +33,7 @@ export default (config = {}) => {
             } else {
                 try {
                     // write the updated package.json to disk before publishing
-                    fs.writeJsonSync(path.join(pkg.location, "package.json"), pkg.packageJSON, {
+                    fs.writeJsonSync(path.join(pkg.location, "package.json"), pkg.package, {
                         spaces: 2
                     });
                     // We need to unset the `npm_` env variables to make sure local `.npmrc` is being read.
