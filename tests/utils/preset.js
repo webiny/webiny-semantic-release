@@ -1,3 +1,3 @@
 export const packages = () => {
-    return [{ name: "preset-package", location: "", packageJSON: {} }];
+    return [{ name: "preset-package", location: "", package: {} }];
 };

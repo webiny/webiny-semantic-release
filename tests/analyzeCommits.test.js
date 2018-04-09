@@ -168,13 +168,16 @@ describe("analyzeCommits plugin test", function() {
 
         const isRelevant = (pkg, commit) => {
             if (commit.message.match(/affects:(.*)/)) {
-                return RegExp.$1.split(",").map(n => n.trim()).filter(name => pkg.name === name).length;
+                return RegExp.$1
+                    .split(",")
+                    .map(n => n.trim())
+                    .filter(name => pkg.name === name).length;
             }
         };
-        release = compose([analyzeCommitsFactory({isRelevant})]);
+        release = compose([analyzeCommitsFactory({ isRelevant })]);
 
         const params = {
-            packages: [{ name: "package-1" }, { name: "package-2" }, {name: "package-3"}],
+            packages: [{ name: "package-1" }, { name: "package-2" }, { name: "package-3" }],
             logger,
             git: new Git(),
             config: {

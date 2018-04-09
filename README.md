@@ -35,7 +35,7 @@ Plugins are listed in the recommended order:
 | 1. | githubVerify | verifies `GH_TOKEN` or `GITHUB_TOKEN` and repo permissions. |
 | 2. | npmVerify | verifies `NPM_TOKEN`. |
 | 3. | analyzeCommits | analyzes commit history and determines version type. |
-| 4. | updatePackageJSON | updates package version and versions of dependencies. |
+| 4. | updatePackage | updates package version and versions of dependencies. |
 | 5. | releaseNotes | generates release notes for GitHub release. |
 | 6. | githubPublish | publishes a new release to GitHub. |
 | 7. | npmPublish | publishes the package to npm. |
@@ -58,7 +58,7 @@ const projectPackages = [
     {
         name: 'package-1',
         location: '/my/project/packages/package-1',
-        packageJSON: {
+        package: {
             // Here goes the ENTIRE content of `package.json` file
             name: 'package-1',
             version: '0.0.0-semantically-released',
@@ -79,7 +79,7 @@ wsr.release({
         wsr.npmVerify(),
         wsr.analyzeCommits(),
         wsr.releaseNotes(),
-        wsr.updatePackageJSON(),
+        wsr.updatePackage(),
         wsr.githubPublish(),
         wsr.npmPublish()
     ]
@@ -103,7 +103,7 @@ const packages = PackageUtilities.getPackages(new Repository())
         return {
             name: pkg.name,
             location: pkg.location,
-            packageJSON: pkg.toJSON()
+            package: pkg.toJSON()
         };
     });
 ```
@@ -119,7 +119,7 @@ These Flow types will make everything much clearer:
 declare type Package = {
     name: string,
     location: string,
-    packageJSON: Object
+    package: Object
 };
 
 declare type Params = {

@@ -9,7 +9,7 @@ describe("build params test", () => {
 
     it("should build a valid default `params` object", async () => {
         const config = {
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            packages: [{ name: "package-1", location: "", package: {} }],
             tagFormat
         };
 
@@ -42,7 +42,7 @@ describe("build params test", () => {
             preview: true,
             repositoryUrl: "test",
             branch: "development",
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            packages: [{ name: "package-1", location: "", package: {} }],
             tagFormat
         };
 
@@ -70,7 +70,7 @@ describe("build params test", () => {
             preview: true,
             repositoryUrl: "test",
             branch: "development",
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            packages: [{ name: "package-1", location: "", package: {} }],
             tagFormat
         };
 
@@ -94,7 +94,7 @@ describe("build params test", () => {
 
     it("should convert `tagFormat` string into a function", async () => {
         const config = {
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            packages: [{ name: "package-1", location: "", package: {} }],
             tagFormat: "v${version}"
         };
 
@@ -105,7 +105,7 @@ describe("build params test", () => {
 
     it("should use the given `tagFormat` function", async () => {
         const config = {
-            packages: [{ name: "package-1", location: "", packageJSON: {} }],
+            packages: [{ name: "package-1", location: "", package: {} }],
             tagFormat
         };
 
@@ -115,7 +115,7 @@ describe("build params test", () => {
     });
 
     it("should convert a single package to an array of packages", async () => {
-        const pkg1 = { name: "package-1", location: "", packageJSON: {} };
+        const pkg1 = { name: "package-1", location: "", package: {} };
         const { params } = await buildParams({
             packages: pkg1,
             tagFormat
@@ -133,7 +133,7 @@ describe("build params test", () => {
 
     it("should throw error if an invalid package structure is found", async () => {
         const config1 = { packages: [{ name: "package-1" }], tagFormat };
-        const config2 = { packages: [{ packageJSON: "package-1" }], tagFormat };
+        const config2 = { packages: [{ package: "package-1" }], tagFormat };
         const config3 = { packages: [{ location: "package-1" }], tagFormat };
 
         return Promise.all([

@@ -90,8 +90,10 @@ describe("npmVerify plugin test", function() {
         process.env["NPM_TOKEN"] = "invalid-npm-token";
 
         proxyquire(modulePath, {
-            execa: async () => {
-                throw new Error("Invalid token");
+            execa: {
+                shell: async () => {
+                    throw new Error("Invalid token");
+                }
             }
         });
 

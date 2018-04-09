@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import compose from "../src/utils/compose";
-import updatePackageJSONFactory from "../src/plugins/updatePackageJSON";
+import updatePackageFactory from "../src/plugins/updatePackage";
 
-describe("updatePackageJSON plugin test", function() {
+describe("updatePackage plugin test", function() {
     it("should update package version and versions of dependencies", async () => {
         const params = {
             packages: [
                 {
                     name: "package-1",
-                    packageJSON: {
+                    package: {
                         name: "package-1",
                         version: "0.0.0-semantically-released",
                         dependencies: {
@@ -23,7 +23,7 @@ describe("updatePackageJSON plugin test", function() {
                 },
                 {
                     name: "package-2",
-                    packageJSON: {
+                    package: {
                         name: "package-2",
                         version: "0.0.0-semantically-released"
                     },
@@ -36,7 +36,7 @@ describe("updatePackageJSON plugin test", function() {
                 },
                 {
                     name: "package-3",
-                    packageJSON: {
+                    package: {
                         name: "package-3",
                         version: "0.0.0-semantically-released",
                         dependencies: {
@@ -50,9 +50,9 @@ describe("updatePackageJSON plugin test", function() {
             ]
         };
 
-        await compose([updatePackageJSONFactory()])(params);
+        await compose([updatePackageFactory()])(params);
 
-        const [pkg1, pkg2, pkg3] = params.packages.map(p => p.packageJSON);
+        const [pkg1, pkg2, pkg3] = params.packages.map(p => p.package);
 
         expect(pkg1.version).to.equal("1.0.0");
         expect(pkg1.dependencies["package-2"]).to.equal("^1.6.0");
