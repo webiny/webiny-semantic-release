@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs-extra";
 
 export default (config = {}) => {
-    const { registry, tag } = config;
+    const { registry = "https://registry.npmjs.org", tag } = config;
 
     return async ({ packages, logger, config }, next) => {
         for (let i = 0; i < packages.length; i++) {
@@ -20,7 +20,7 @@ export default (config = {}) => {
             const command = [
                 `npm publish`,
                 tag ? `--tag ${tag}` : null,
-                registry ? `--registry ${registry}` : null,
+                `--registry ${registry}`,
                 pkg.location
             ]
                 .filter(v => v)
