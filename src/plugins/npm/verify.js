@@ -2,7 +2,7 @@ import execa from "execa";
 import fs from "fs-extra";
 
 export default (config = {}) => {
-    const { registry = "//registry.npmjs.org" } = config;
+    const { registry = "https://registry.npmjs.org" } = config;
 
     return async ({ logger, config }, next) => {
         if (config.preview) {
