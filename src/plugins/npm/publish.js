@@ -37,7 +37,7 @@ export default (config = {}) => {
                     // We need to unset the `npm_` env variables to make sure local `.npmrc` is being read.
                     // This is required when running scripts with yarn: https://github.com/yarnpkg/yarn/issues/4475
                     const shell = await execa.shell(
-                        `unset $(env | awk -F= '$1 ~ /^npm_/ {print $1}') && ${command}`
+                        `unset $(env | awk -F= '$1 ~ /^npm_/ {print $1}') & ${command}`
                     );
                     logger.log(shell.stdout);
                     pkg.npmPublish = {
